@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StockPilot — Inventory Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="Favicon.png">
+</head>
+
+<body>
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark">S</div>
+        <div><strong>StockPilot</strong><span>Inventory Suite</span></div>
+      </div>
+      <div class="login-copy">
+        <p class="eyebrow">Administrator access</p>
+        <h1>Welcome back</h1>
+        <p class="muted">Sign in to manage products, stock movements and reports.</p>
+      </div>
+      <form id="loginForm" class="login-form" novalidate>
+        <label>Email address
+          <input id="loginEmail" type="email" autocomplete="username" placeholder="admin@stockpilot.demo" required>
+        </label>
+        <label>Password
+          <div class="password-field"><input id="loginPassword" type="password" autocomplete="current-password"
+              placeholder="Enter password" required><button type="button" id="togglePassword">Show</button></div>
+        </label>
+        <div class="login-options"><label class="check-label"><input type="checkbox" id="rememberMe" checked> Remember
+            me</label><span class="demo-hint">Demo: admin@stockpilot.demo / Admin123!</span></div>
+        <button class="primary-btn login-submit" type="submit">Sign in securely →</button>
+        <p class="form-error" id="loginError" aria-live="polite"></p>
+      </form>
+      <!-- <p class="login-footer">Demo authentication is stored locally in this browser. Connect Supabase for production
+        authentication.</p> -->
+    </div>
+  </div>
+
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <strong>StockPilot</strong>
+          <span>Inventory Suite</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <p class="nav-label">Workspace</p>
+        <button class="nav-item active" data-section="overview"><span>▦</span> Overview</button>
+        <button class="nav-item" data-section="inventory"><span>▤</span> Inventory</button>
+        <button class="nav-item" data-section="movements"><span>⇄</span> Stock Movements</button>
+        <button class="nav-item" data-section="suppliers"><span>◫</span> Suppliers</button>
+        <button class="nav-item" data-section="reports"><span>◩</span> Reports</button>
+        <p class="nav-label">Management</p>
+        <button class="nav-item" data-section="settings"><span>⚙</span> Settings</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="upgrade-card">
+          <!-- <span class="upgrade-icon">✦</span> -->
+          <strong>Stay ahead of stock</strong>
+          <p>Monitor your inventory and make smarter decisions.</p>
+          <button id="quickReportBtn">View quick report →</button>
+        </div>
+        <div class="user-mini">
+          <div class="avatar">AA</div>
+          <div><strong>Admin Ayodele</strong><span>Administrator</span></div>
+          <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="pageTitle">Overview</strong></div>
+        <div class="top-actions">
+          <label class="global-search"><span>⌕</span><input id="globalSearch"
+              placeholder="Search products, SKU..." /></label>
+          <button class="icon-btn" id="notificationBtn" title="Notifications">♧<i></i></button>
+          <button class="primary-btn" id="addProductTop">+ Add product</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Friday, September 11, 2026</p>
+            <h1 id="sectionHeading">Good morning, Ayodele</h1>
+            <p class="muted">Here’s what’s happening with your inventory today.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="secondary-btn" id="exportBtn">⇩ Export</button>
+            <button class="primary-btn" id="addProductBtn">+ Add product</button>
+          </div>
+        </div>
+
+        <div id="appView"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Inventory record</p>
+          <h2 id="modalTitle">Add product</h2>
+        </div><button class="icon-btn" id="closeModal">×</button>
+      </div>
+      <form id="productForm">
+        <input type="hidden" id="productId">
+        <div class="form-grid">
+          <label>Product name<input id="productName" required placeholder="e.g. Wireless Headphones"></label>
+          <label>SKU<input id="productSku" required placeholder="e.g. WH-1001"></label>
+          <label>Category<select id="productCategory">
+              <option>Electronics</option>
+              <option>Office</option>
+              <option>Furniture</option>
+              <option>Accessories</option>
+              <option>Appliances</option>
+            </select></label>
+          <label>Supplier<input id="productSupplier" required placeholder="Supplier name"></label>
+          <label>Unit price (₦)<input id="productPrice" type="number" min="0" required></label>
+          <label>Quantity<input id="productQuantity" type="number" min="0" required></label>
+          <label>Reorder level<input id="productReorder" type="number" min="0" required></label>
+          <label>Status<select id="productStatus">
+              <option value="active">Active</option>
+              <option value="draft">Draft</option>
+            </select></label>
+        </div>
+        <label>Description<textarea id="productDescription" rows="3"
+            placeholder="Short product description..."></textarea></label>
+        <div class="modal-footer"><button type="button" class="secondary-btn" id="cancelModal">Cancel</button><button
+            class="primary-btn" type="submit">Save product</button></div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="modal-backdrop" id="movementBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="movementTitle">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Inventory transaction</p>
+          <h2 id="movementTitle">Record stock movement</h2>
+        </div><button class="icon-btn" id="closeMovement">×</button>
+      </div>
+      <form id="movementForm" novalidate>
+        <div class="movement-type-toggle">
+          <button type="button" class="movement-type active" data-movement-type="in">↓ Stock in</button>
+          <button type="button" class="movement-type" data-movement-type="out">↑ Stock out</button>
+        </div>
+        <input type="hidden" id="movementType" value="in">
+        <div class="form-grid">
+          <label>Product<select id="movementProduct" required></select></label>
+          <label>Quantity<input id="movementQuantity" type="number" min="1" step="1" required placeholder="0"></label>
+          <label>Reference<input id="movementReference" maxlength="60" placeholder="PO-10024"></label>
+          <label>Performed by<input id="movementUser" value="Admin Owner" readonly></label>
+        </div>
+        <label>Note<textarea id="movementNote" rows="3" maxlength="240"
+            placeholder="Optional transaction note..."></textarea></label>
+        <div class="movement-preview" id="movementPreview"></div>
+        <div class="modal-footer"><button type="button" class="secondary-btn" id="cancelMovement">Cancel</button><button
+            class="primary-btn" type="submit">Confirm movement</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="confirmBackdrop">
+    <div class="confirm-card" role="dialog" aria-modal="true">
+      <div class="confirm-icon">!</div>
+      <h2 id="confirmTitle">Are you sure?</h2>
+      <p id="confirmText" class="muted"></p>
+      <div class="modal-footer"><button class="secondary-btn" id="confirmCancel">Cancel</button><button
+          class="danger-btn" id="confirmOk">Confirm</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js?v=2.1"></script>
+</body>
+
+</html>
